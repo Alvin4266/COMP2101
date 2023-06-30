@@ -1,10 +1,11 @@
+
 #!/bin/bash
 
 # Script to display information about the computer
 
 # Display the Fully-Qualified Domain Name (FQDN)
-echo -n "FQDN: "
-hostname
+fqdn=$(hostname -f)
+echo "FQDN: $fqdn"
 
 echo "Host Information:"
 # Display information about the system using hostnamectl
