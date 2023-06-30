@@ -1,22 +1,31 @@
-
 #!/bin/bash
 
-# Script to display information about the computer
-
-# Display the Fully-Qualified Domain Name (FQDN)
+# Get hostname and fully qualified domain name
+hostname=$(hostname)
 fqdn=$(hostname -f)
-echo "FQDN: $fqdn"
 
-echo "Host Information:"
-# Display information about the system using hostnamectl
-hostnamectl
+# Get operating system name and version
+os=$(lsb_release -ds)
+os_version=$(lsb_release -rs)
 
-echo "IP Addresses:"
-# Display the IP addresses excluding the ones starting with 127
-hostname -I | grep -v '^127'
+# Get the default route IP address
+ip_address=$(ip route get 8.8.8.8 | awk '{print $7}')
 
-echo "Root Filesystem Status:"
-# Display the status of the root filesystem using df
-df -h / | awk 'NR==2 {print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6}'
+# Get root filesystem free space in human-friendly format
+free_space=$(df -h --output=avail / | tail -n 1)
 
-# End of script
+# Output template with embedded variables
+output_template=$(cat <<EOF
+Report for $hostname
+===============
+FQDN: $fqdn
+Operating System name and version: $os $os_version
+IP Address: $ip_address
+Root Filesystem Free Space: $free_space
+===============
+EOF
+)
+
+# Print the formatted output
+echo "$output_template"
+
